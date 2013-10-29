@@ -1,0 +1,56 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,41,31)
+  Text = ("Configuración de conexión")
+  { btnOK Button
+    MoveScaled(28,26,12,4)
+    Text = ("Aceptar")
+    Default = True
+  }
+  { btnCancel Button
+    MoveScaled(15,26,12,4)
+    Text = ("Cancel")
+  }
+  { txtBaseDatos TextBox
+    MoveScaled(13,21,27,4)
+  }
+  { txtPassword TextBox
+    MoveScaled(13,16,27,4)
+    Password = True
+  }
+  { txtUsuario TextBox
+    MoveScaled(13,11,27,4)
+  }
+  { txtPuerto ValueBox
+    MoveScaled(13,6,27,4)
+  }
+  { txtServidor TextBox
+    MoveScaled(13,1,27,4)
+  }
+  { Label1 Label
+    MoveScaled(1,1,9,3)
+    AutoResize = True
+    Text = ("Servidor:")
+  }
+  { Label2 Label
+    MoveScaled(1,6,10,3)
+    AutoResize = True
+    Text = ("Puerto:")
+  }
+  { Label3 Label
+    MoveScaled(1,11,9,3)
+    AutoResize = True
+    Text = ("Usuario:")
+  }
+  { Label4 Label
+    MoveScaled(1,16,10,3)
+    AutoResize = True
+    Text = ("Contraseña:")
+  }
+  { Label5 Label
+    MoveScaled(1,21,12,3)
+    AutoResize = True
+    Text = ("Base de datos:")
+  }
+}

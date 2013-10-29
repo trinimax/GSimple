@@ -1,0 +1,5 @@
+' Gambas class file
+
+Public Id As Integer
+Public Usuario As String
+Public Password As String

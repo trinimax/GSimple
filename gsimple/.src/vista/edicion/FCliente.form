@@ -1,0 +1,48 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,52,21)
+  Text = ("Cliente")
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  { Panel4 Panel
+    MoveScaled(1,1,49,11)
+    Expand = True
+    { txtId ValueBox
+      MoveScaled(8,0,11,4)
+      Enabled = False
+    }
+    { txtNombre TextBox
+      MoveScaled(8,5,28,4)
+    }
+    { Label1 Label
+      MoveScaled(0,0,11,3)
+      AutoResize = True
+      Text = ("Código:")
+    }
+    { Label2 Label
+      MoveScaled(0,5,11,3)
+      AutoResize = True
+      Text = ("Nombre:")
+    }
+  }
+  { Panel1 HBox
+    MoveScaled(15,15,35,4)
+    Spacing = True
+    { Panel7 Panel
+      MoveScaled(0,0,4,4)
+      Expand = True
+    }
+    { btnCancel Button
+      MoveScaled(8,0,12,4)
+      Text = ("Cancel")
+      Cancel = True
+    }
+    { btnOK Button
+      MoveScaled(21,0,12,4)
+      Text = ("Guardar")
+      Default = True
+    }
+  }
+}

@@ -1,0 +1,70 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,51,29)
+  Expand = True
+  Text = ("Producto")
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  { Panel4 Panel
+    MoveScaled(1,1,49,21)
+    Expand = True
+    { txtId ValueBox
+      MoveScaled(12,1,11,4)
+    }
+    { txtDescripcion TextBox
+      MoveScaled(12,6,28,4)
+    }
+    { txtPrecio ValueBox
+      MoveScaled(12,11,11,4)
+    }
+    { txtStock ValueBox
+      MoveScaled(12,16,11,4)
+      Enabled = False
+    }
+    { Label4 Label
+      MoveScaled(1,16,11,3)
+      AutoResize = True
+      Text = ("Stock:")
+    }
+    { Label3 Label
+      MoveScaled(1,11,11,3)
+      AutoResize = True
+      Text = ("Precio:")
+    }
+    { Label2 Label
+      MoveScaled(1,6,11,3)
+      AutoResize = True
+      Text = ("Descripción:")
+    }
+    { Label1 Label
+      MoveScaled(1,1,11,3)
+      AutoResize = True
+      Text = ("Código:")
+    }
+    { cmdIngresarStock Button
+      MoveScaled(23,16,4,4)
+      ToolTip = ("Ingresar stock")
+      Picture = Picture["icon:/16/add"]
+      Default = True
+    }
+  }
+  { Panel1 HBox
+    MoveScaled(1,23,35,4)
+    Spacing = True
+    { Panel7 Panel
+      MoveScaled(0,0,4,4)
+      Expand = True
+    }
+    { btnCancel Button
+      MoveScaled(10,0,12,4)
+      Text = ("Cancel")
+      Cancel = True
+    }
+    { btnOK Button
+      MoveScaled(23,0,12,4)
+      Text = ("Guardar")
+    }
+  }
+}

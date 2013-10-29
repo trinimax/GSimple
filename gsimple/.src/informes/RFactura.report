@@ -1,0 +1,157 @@
+# Gambas Form File 3.0
+
+{ Report Report
+  #MoveScaled(0,0,77,53)
+  Padding = ReportPadding["Top:1mm;Bottom:1mm;Left:1mm;Right:1mm"]
+  Index = 0
+  Text = ("Factura")
+  { ReportPanel1 ReportVBox
+    #MoveScaled(1,1,75,16)
+    Height = "50mm"
+    AutoResize = True
+    { ReportPanel2 ReportHBox
+      #MoveScaled(1,1,44,9)
+      Height = "10mm"
+      { ReportImage1 ReportImage
+        #MoveScaled(1,0,14,9)
+        Expand = True
+        Image = Image.Load("logo.png")
+      }
+      { ReportLabel6 ReportLabel
+        #MoveScaled(25,1,7,4)
+        Width = "15mm"
+        Font = Font["Bold"]
+        Text = ("Fecha:")
+      }
+      { lblFecha ReportLabel
+        #MoveScaled(32,1,11,4)
+        Width = "20mm"
+      }
+    }
+    { ReportPanel5 ReportHBox
+      #MoveScaled(1,11,30,4)
+      Height = "10mm"
+      { ReportLabel7 ReportLabel
+        #MoveScaled(0,0,7,4)
+        Width = "15mm"
+        Font = Font["Bold"]
+        Padding = ReportPadding["Top:1mm;Bottom:1mm;Left:1mm;Right:1mm"]
+        Text = ("Cliente:")
+      }
+      { lblCliente ReportLabel
+        #MoveScaled(8,0,18,4)
+        Padding = ReportPadding["Top:1mm;Bottom:1mm;Left:1mm;Right:1mm"]
+        Expand = True
+      }
+    }
+  }
+  { ReportHBox1 ReportHBox
+    #MoveScaled(1,18,75,4)
+    Height = "7mm"
+    Border = ReportBorder["Bottom:1mm #DFDFDF"]
+    { ReportLabel1 ReportLabel
+      #MoveScaled(1,0,9,4)
+      Width = "10%"
+      Font = Font["Bold"]
+      Padding = ReportPadding["Top:1mm;Bottom:1mm;Left:1mm;Right:1mm"]
+      Text = ("Cantidad")
+      Alignment = Align.Right
+    }
+    { ReportLabel4 ReportLabel
+      #MoveScaled(11,0,12,4)
+      Width = "20%"
+      Font = Font["Bold"]
+      Padding = ReportPadding["Top:1mm;Bottom:1mm;Left:1mm;Right:1mm"]
+      Text = ("Código")
+      Alignment = Align.Right
+    }
+    { ReportLabel2 ReportLabel
+      #MoveScaled(24,0,25,4)
+      Width = "50%"
+      Font = Font["Bold"]
+      Padding = ReportPadding["Top:1mm;Bottom:1mm;Left:1mm;Right:1mm"]
+      Text = ("Descripcion")
+    }
+    { ReportLabel3 ReportLabel
+      #MoveScaled(50,0,12,4)
+      Width = "10%"
+      Font = Font["Bold"]
+      Padding = ReportPadding["Top:1mm;Bottom:1mm;Left:1mm;Right:1mm"]
+      Expand = True
+      Text = ("Precio")
+      Alignment = Align.Right
+    }
+    { ReportLabel5 ReportLabel
+      #MoveScaled(63,0,12,4)
+      Width = "10%"
+      Font = Font["Bold"]
+      Padding = ReportPadding["Top:1mm;Bottom:1mm;Left:1mm;Right:1mm"]
+      Expand = True
+      Text = ("Importe")
+      Alignment = Align.Right
+    }
+  }
+  { ReportHBox2 ReportHBox
+    #MoveScaled(1,22,75,4)
+    Height = "7mm"
+    { lblCantidad ReportLabel
+      #MoveScaled(1,0,9,4)
+      Width = "10%"
+      Padding = ReportPadding["Top:1mm;Bottom:1mm;Left:1mm;Right:1mm"]
+      Border = ReportBorder["Left:1mm #DFDFDF;Right:1mm #DFDFDF"]
+      Alignment = Align.Right
+    }
+    { lblCodigo ReportLabel
+      #MoveScaled(11,0,12,4)
+      Width = "20%"
+      Padding = ReportPadding["Top:1mm;Bottom:1mm;Left:1mm;Right:1mm"]
+      Border = ReportBorder["Right:1mm #DFDFDF"]
+      Alignment = Align.Right
+    }
+    { lblDescripcion ReportLabel
+      #MoveScaled(24,0,25,4)
+      Width = "50%"
+      Padding = ReportPadding["Top:1mm;Bottom:1mm;Left:1mm;Right:1mm"]
+      Border = ReportBorder["Right:1mm #DFDFDF"]
+    }
+    { lblPrecio ReportLabel
+      #MoveScaled(50,0,12,4)
+      Width = "10%"
+      Padding = ReportPadding["Top:1mm;Bottom:1mm;Left:1mm;Right:1mm"]
+      Expand = True
+      Border = ReportBorder["Right:1mm #DFDFDF"]
+      Alignment = Align.Right
+    }
+    { lblImporte ReportLabel
+      #MoveScaled(63,0,12,4)
+      Width = "10%"
+      Padding = ReportPadding["Top:1mm;Bottom:1mm;Left:1mm;Right:1mm"]
+      Expand = True
+      Border = ReportBorder["Right:1mm #DFDFDF"]
+      Alignment = Align.Right
+    }
+  }
+  { lblTotal ReportLabel
+    #MoveScaled(1,27,75,4)
+    Width = "100%"
+    Height = "10mm"
+    AutoResize = True
+    Border = ReportBorder["Top:1mm #DFDFDF;Bottom:1mm #000000"]
+    Alignment = Align.Right
+  }
+  { ReportPanel3 ReportPanel
+    #MoveScaled(1,32,75,10)
+    Expand = True
+  }
+  { lblCantidad5 ReportLabel
+    #MoveScaled(1,43,75,4)
+    Width = "100%"
+    Height = "10mm"
+    Fixed = True
+    AutoResize = True
+    Text = ("Página $PAGE de $NPAGES")
+    Alignment = Align.Right
+    UseField = True
+  }
+  Index = 0
+}

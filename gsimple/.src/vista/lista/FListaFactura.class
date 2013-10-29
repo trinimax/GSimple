@@ -1,0 +1,127 @@
+' Gambas class file
+
+Public Sub Form_Open()
+  InicarGrid
+  CargarLista
+  Me.Center()
+End
+
+Private Sub InicarGrid()
+  With grd
+      .Columns.Count = 4
+  End With
+  
+  'Número
+  With grd.Columns[0]
+    .Text = "Número"
+    .Alignment = Align.Right
+    .Width = 80
+  End With
+  
+  'Fecha
+  With grd.Columns[1]
+    .Text = "Fecha"
+    .Alignment = Align.Right
+    .Width = 80
+  End With
+  
+  'Cliente
+  With grd.Columns[2]
+    .Text = "Cliente"
+    .Alignment = Align.Left
+    .Width = 300
+  End With
+
+  'Total
+  With grd.Columns[3]
+    .Text = "Total"
+    .Alignment = Align.Right
+    .Width = 80
+  End With
+End
+
+Private Sub CargarLista()
+  Dim Facturas As CFactura[]
+  Dim Factura As CFactura
+  Dim Filtro As String
+  Dim i As Long
+  
+  If txtFiltro.Length > 0 Then
+    Filtro = Subst("nombre LIKE '&1%' OR fecha LIKE '&1%'", txtFiltro.Text)
+  Endif
+  
+  Facturas = MFactura.GetAll(Filtro)
+  Facturas.Sort(gb.Descent)
+  
+  grd.Rows.Count = Facturas.Count
+  
+  For Each Factura In Facturas
+      With Factura
+        grd[i, 0].Text = .Id
+        grd[i, 1].Text = MGeneral.FormatFriendDate(.Fecha)
+        grd[i, 2].Text = .Cliente.Nombre
+        grd[i, 3].Text = MGeneral.FormatCurrency(.Total)
+      End With      
+      i += 1
+  Next
+  
+  If Facturas.Count = 0 And txtFiltro.Length > 0 Then
+    txtFiltro.Background = &HFFBFBF
+  Else
+    txtFiltro.Background = Color.TextBackground
+  Endif
+End
+
+Public Sub cmdNuevo_Click()
+  With FFactura
+    .IsNew = True
+    If .ShowModal() Then
+      CargarLista()
+    Endif
+  End With
+End
+
+Public Sub cmdModificar_Click()
+  If grd.Row >= 0 Then
+    With FFactura
+      .Factura = MFactura.GetById(grd[grd.Row, 0].Text)
+      .IsNew = False
+      If .ShowModal() Then
+        CargarLista()
+      Endif
+    End With
+  Endif
+End
+
+Public Sub cmdEliminar_Click()
+  If grd.Row >= 0 Then
+    If MFactura.Delete(grd[grd.Row, 0].Text) Then
+        CargarLista()
+    Endif
+  Endif
+End
+
+Public Sub grd_DblClick()
+  cmdModificar.Value = True
+End
+
+Public Sub grd_KeyPress()
+  Select Case Key.Code
+    Case Key.Enter
+      cmdModificar.Value = True
+    Case Key.Delete
+      cmdEliminar.Value = True
+  End Select
+End
+
+Public Sub txtFiltro_KeyPress()
+  If Key.Code = Key.Enter Or Key.Code = Key.Return Then
+    CargarLista()
+  Endif
+End
+
+Public Sub cmdImprimir_Click()
+  If grd.Row >= 0 Then
+    MImpresion.ImprimirFactura(grd[grd.Row, 0].Text)
+  Endif
+End

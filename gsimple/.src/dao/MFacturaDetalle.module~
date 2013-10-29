@@ -1,0 +1,50 @@
+' Gambas module file
+
+Public Function GetByIdFactura(IdFactura As Integer) As CFacturaDetalle[]
+  Dim rs As Result
+  Dim OFacturaDetalle As CFacturaDetalle 
+  Dim OFacturaDetalles As CFacturaDetalle[] = New CFacturaDetalle[]
+
+  rs = MData.Exec("SELECT * FROM factura_detalle WHERE idfactura = &1", MData.GetSQLNum(IdFactura))
+
+  While rs.Available
+      With OFacturaDetalle = New CFacturaDetalle
+        .Id = rs["id"]
+        .IdFactura = rs["idfactura"]
+        .Producto = MProducto.GetById(rs["idproducto"])
+        .Cantidad = rs["cantidad"]
+        .Precio = rs["precio"]
+      End With
+      
+      OFacturaDetalles.Add(OFacturaDetalle)
+      rs.MoveNext
+  Wend
+  
+  Return OFacturaDetalles
+End
+
+Public Function Insert(FacturaDetalle As CFacturaDetalle) As Boolean
+  MData.Exec("INSERT INTO factura_detalle(idfactura, idproducto, cantidad, precio) VALUES(&1, &2, &3, &4)", MData.GetSQLNum(FacturaDetalle.IdFactura), MData.GetSQLNum(FacturaDetalle.Producto.Id), MData.GetSQLNum(FacturaDetalle.Cantidad), MData.GetSQLNum(FacturaDetalle.Precio))
+  FacturaDetalle.Id = MData.GetLastId()
+  
+  MProducto.MoverStock(FacturaDetalle.Producto.Id, FacturaDetalle.Cantidad)
+  
+  Return True
+Catch
+  Return False
+End
+
+Public Function Update(FacturaDetalle As CFacturaDetalle) As Boolean
+  MData.Exec("UPDATE factura_detalle SET cantidad = &1, precio = &2 WHERE id = &3", MData.GetSQLNum(FacturaDetalle.Cantidad), MData.GetSQLNum(FacturaDetalle.Precio), MData.GetSQLNum(FacturaDetalle.Id))
+  
+  Return True
+Catch
+  Return False
+End
+
+Public Function Delete(Id As Integer) As Boolean
+  MData.Exec("DELETE FROM factura_detalle WHERE id = &1", MData.GetSQLNum(Id))
+  Return True
+Catch
+  Return False
+End

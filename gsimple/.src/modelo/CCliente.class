@@ -1,0 +1,8 @@
+' Gambas class file
+
+Public Id As Integer
+Public Nombre As String
+
+Public Function _compare(Other As CCliente) As Integer
+  Return Sgn(Me.Id - Other.Id)
+End

@@ -1,0 +1,39 @@
+' Gambas module file
+
+Public Usuario As CUsuario
+
+Public Sub Main()
+  If FLogin.ShowModal() Then
+    FMain.Show()
+  Endif
+End
+
+Public Function ToNumber(Value As String) As Float
+  Dim Number As Float = 0
+  Number = CFloat(Replace(Value, ",", "."))
+Finally
+  Return Number
+End
+
+Public Function FormatFriendDate(Value As Date) As String
+  Select Case DateDiff(Value, Date, gb.Day)
+    Case 0
+      Return "Hoy"
+    Case 1
+      Return "Ayer"
+    Case Else
+      If Year(Value) = Year(Now) Then
+        Return Format(Value, "dd mmm")
+      Else
+        Return Format(Value, "dd mmm yyyy")
+      Endif
+  End Select
+End
+
+Public Function FormatCurrency(Value As Float, Optional Decimal As Integer = 2) As String
+  Return Format(Value, "$ ,#0." & String(Decimal, "0"))
+End
+
+Public Function FormatNumber(Value As Float, Optional Decimal As Integer = 2) As String
+  Return Format(Value, ",#0." & String(Decimal, "0"))
+End

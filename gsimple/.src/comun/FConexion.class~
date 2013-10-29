@@ -1,0 +1,23 @@
+' Gambas class file
+
+
+Public Sub btnOK_Click()
+  Settings["connection/host"] = txtServidor.Text
+  Settings["connection/port"] = txtPuerto.Value
+  Settings["connection/user"] = txtUsuario.Text
+  Settings["connection/pass"] = txtPassword.Text
+  Settings["connection/name"] = txtBaseDatos.Text
+  Me.Close()
+End
+
+Public Sub btnCancel_Click()
+  Me.Close()
+End
+
+Public Sub Form_Open()
+  txtServidor.Text = Settings["connection/host"] 
+  txtPuerto.Value = Settings["connection/port"]
+  txtUsuario.Text = Settings["connection/pass"]
+  txtPassword.Text = Settings["connection/pass"] 
+  txtBaseDatos.Text = Settings["connection/name"]
+End

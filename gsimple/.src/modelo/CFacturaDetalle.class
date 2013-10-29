@@ -1,0 +1,13 @@
+' Gambas class file
+
+Public Id As Integer
+Public IdFactura As Integer
+Public Precio As Float
+Public Cantidad As Float
+Public Producto As CProducto
+
+Property Read Importe As Float
+
+Private Function Importe_Read() As Float
+  Return Cantidad * Precio
+End

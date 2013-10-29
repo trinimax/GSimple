@@ -1,0 +1,110 @@
+' Gambas module file
+
+Public Function GetAll(Filter As String) As CFactura[]
+  Dim rs As Result
+  Dim OFactura As CFactura 
+  Dim OFacturas As CFactura[] = New CFactura[]
+
+  If Len(Filter) Then
+    rs = MData.Exec("SELECT * FROM vw_factura WHERE " & Filter)
+  Else
+    rs = MData.Exec("SELECT * FROM factura")
+  Endif
+  
+
+  While rs.Available
+      OFactura = New CFactura
+      
+      With OFactura
+        .Id = rs["id"]
+        .Fecha = rs["fecha"]
+        .Cliente = MCliente.GetById(rs["idcliente"])
+        .Total = rs["total"]
+      End With
+      
+      OFacturas.Add(OFactura)
+      rs.MoveNext
+  Wend
+
+  Return OFacturas
+End
+
+Public Function GetById(Id As Integer) As CFactura
+  Dim rs As Result
+  Dim OFactura As CFactura = Null
+  
+  rs = MData.Exec("SELECT * FROM factura WHERE id = &1", MData.GetSQLNum(Id))
+  
+  If rs.Available Then
+    OFactura = New CFactura    
+
+    With OFactura
+      .Id = rs["id"]
+      .Fecha = rs["fecha"]
+      .Cliente = MCliente.GetById(rs["idcliente"])
+      .Total = rs["total"]
+    End With
+  Endif
+  
+  Return OFactura
+End
+
+Public Function Insert(Factura As CFactura) As Boolean
+  Dim Item As CFacturaDetalle
+  
+  MData.Begin
+  
+  MData.Exec("INSERT INTO factura(fecha, idcliente, total) VALUES(&1, &2, &3)", MData.GetSQLDate(Factura.Fecha), MData.GetSQLNum(Factura.Cliente.Id), MData.GetSQLNum(Factura.Total))
+  Factura.Id = MData.GetLastId()
+  
+  For Each Item In Factura.Detalle
+    Item.IdFactura = Factura.Id
+    MFacturaDetalle.Insert(Item)
+  Next
+  
+  MData.Commit
+  
+  Return True
+Catch
+  MData.Rollback
+  Return False
+End
+
+Public Function Update(Factura As CFactura) As Boolean
+  Dim Item As CFacturaDetalle
+  Dim NoDelete As New String[]
+  
+  MData.Begin
+  
+  MData.Exec("UPDATE factura SET fecha = &1, idcliente = &2, total = &3 WHERE id = &4",
+   MData.GetSQLDate(Factura.Fecha),
+   MData.GetSQLNum(Factura.Cliente.Id),
+   MData.GetSQLNum(Factura.Total), 
+   MData.GetSQLNum(Factura.Id))
+  
+  For Each Item In Factura.Detalle
+    If Item.Id > 0 Then
+      MFacturaDetalle.Update(Item)
+    Else
+      Item.IdFactura = Factura.Id
+      MFacturaDetalle.Insert(Item)
+    Endif
+    
+    NoDelete.Add(MData.GetSQLNum(Item.Id))
+  Next
+
+  MData.Exec("DELETE FROM factura_detalle WHERE idfactura = &1 AND id NOT IN(&2)", MData.GetSQLNum(Factura.Id), NoDelete.Join(","))
+  MData.Commit
+  
+  Return True
+Catch
+  MData.Rollback
+  Return False
+End
+
+Public Function Delete(Id As Integer) As Boolean
+  MData.Exec("DELETE FROM factura WHERE id = &1", MData.GetSQLNum(Id))
+  Return True
+Catch
+  Return False
+End

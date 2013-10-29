@@ -1,0 +1,95 @@
+' Gambas class file
+
+Public Producto As CProducto
+Public IsNew As Boolean
+
+Public Sub Form_Open()
+  If IsNew Then
+    cmdIngresarStock.Enabled = False
+  Else
+    txtId.Enabled = False
+  Endif
+  
+  Mostrar()
+End
+
+Private Sub Mostrar()  
+  If Not IsNull(Producto) Then
+    With Producto
+      txtId.Value = .Id
+      txtId.Enabled = False
+      txtDescripcion.Text = .Descripcion
+      txtPrecio.Value = .Precio
+      txtStock.Value = .Stock
+    End With
+  Endif
+End
+
+Private Function Guardar() As Boolean
+  If Validar() Then
+    If IsNew Then
+      Producto = New CProducto
+    Endif
+    
+    With Producto
+      .Id = txtId.Value
+      .Descripcion = txtDescripcion.Text
+      .Precio = txtPrecio.Value
+    End With
+    
+    If IsNew Then
+      MProducto.Insert(Producto)
+    Else
+      MProducto.Update(Producto)
+    Endif
+    
+    Return True
+  Endif
+End
+
+Private Function Validar() As Boolean
+  If txtId.Value <= 0 Then
+    Message.Error("El código debe ser mayor a 0 (cero).")
+    txtId.SetFocus
+    Return False
+  Endif  
+
+  If txtDescripcion.Length = 0 Then
+    Message.Error("Debe ingresar una descripcion")
+    txtDescripcion.SetFocus
+    Return False
+  Endif
+  
+  If txtPrecio.Value <= 0 Then
+    Message.Error("El precio debe ser mayor a 0 (cero).")
+    txtPrecio.SetFocus
+    Return False
+  Endif  
+
+  Return True
+End
+
+
+Public Sub btnOK_Click()
+  If Guardar() Then
+    Me.Close(True)
+  Endif
+End
+
+Public Sub btnCancel_Click()
+  Me.Close(False)
+End
+
+Public Sub cmdIngresarStock_Click()
+  Dim Cantidad As Float
+  
+  If Not IsNew Then
+    Cantidad = MGeneral.ToNumber(InputBox("Cantidad a ingresar al stock", "Ingreso de stock", "0"))
+  
+    If Cantidad > 0 Then
+      If MProducto.MoverStock(Producto.Id, Cantidad) Then
+        txtStock.Value = Cantidad
+      Endif
+    Endif
+  Endif
+End

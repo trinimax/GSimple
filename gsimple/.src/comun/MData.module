@@ -1,0 +1,63 @@
+' Gambas module file
+
+Private Conn As Connection
+
+Public Function Connect() As Boolean
+  Conn = New Connection
+  
+  With Conn
+    .Type = "mysql"
+    .Host = Settings["connection/host"]
+    .Port = Settings["connection/port"]
+    .User = Settings["connection/user"]
+    .Password = Settings["connection/pass"]
+    .Name = Settings["connection/name"]
+    Try .Open
+  End With
+
+  If Error Then
+    Message.Error(Error.Text)
+    Return False
+  Else
+    Return True
+  Endif
+End
+
+Public Sub Begin()
+  Conn.Begin
+End
+
+Public Sub Commit()
+  Conn.Commit
+End
+
+Public Sub Rollback()
+  Conn.Rollback
+End
+
+Public Function Exec(Query As String, ...) As Result
+   Dim i As Integer
+  
+  For i = 0 To Param.Count - 1
+    Query = Replace(Query, "&" & Str(i + 1), Param[i])
+  Next
+  
+  Return Conn.Exec(Query)
+End
+
+Public Function GetLastId() As Integer
+  Return MData.Exec("SELECT last_insert_id() AS id")["id"]
+End
+
+Public Function GetSQLText(Value As String) As String
+  Return "'" & Replace(Value, "'", "''") & "'"
+End
+
+Public Function GetSQLDate(Value As Date) As String
+  Return "'" & Format(Value, "yyyy-mm-dd hh:nn:ss") & "'"
+End
+
+Public Function GetSQLNum(Value As Float) As String
+  Return CStr(Value) 
+End
+

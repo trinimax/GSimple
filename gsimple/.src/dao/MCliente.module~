@@ -1,0 +1,57 @@
+' Gambas module file
+
+Public Function GetAll(Optional Filter As String) As CCliente[]
+  Dim rs As Result
+  Dim OCliente As CCliente
+  Dim OClientes As CCliente[] = New CCliente[]
+
+  If Len(Filter) Then
+    rs = MData.Exec("SELECT * FROM cliente WHERE " & Filter)
+  Else  
+    rs = MData.Exec("SELECT * FROM cliente")
+  Endif
+  
+  While rs.Available
+      With OCliente = New CCliente
+        .Id = rs["id"]
+        .Nombre = rs["nombre"]
+      End With
+      
+      OClientes.Add(OCliente)
+      rs.MoveNext
+  Wend  
+
+  Return OClientes
+End
+
+Public Function GetById(Id As Integer) As CCliente
+  Dim rs As Result
+  Dim OCliente As CCliente = Null
+  
+  rs = MData.Exec("SELECT * FROM cliente WHERE id = &1", MData.GetSQLText(Id))
+  
+  If rs.Available Then
+    With OCliente = New CCliente   
+      .Id = rs["id"]
+      .Nombre = rs["nombre"]
+    End With
+  Endif
+  
+  Return OCliente
+End
+
+Public Function Insert(Cliente As CCliente) As Boolean
+  MData.Exec("INSERT INTO cliente(nombre) VALUES(&1)", MData.GetSQLText(Cliente.Nombre))
+  Cliente.Id = MData.GetLastId()
+  Return True
+End
+
+Public Function Update(Cliente As CCliente) As Boolean
+  MData.Exec("UPDATE cliente SET nombre = &1 WHERE id = &2", MData.GetSQLText(Cliente.Nombre), MData.GetSQLNum(Cliente.Id))
+  Return True
+End
+
+Public Function Delete(Id As Integer) As Boolean
+  MData.Exec("DELETE FROM cliente WHERE id = &1", MData.GetSQLNum(Id))
+  Return True
+End

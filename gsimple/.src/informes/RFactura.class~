@@ -1,0 +1,33 @@
+' Gambas class file
+
+Private m_Factura As CFactura
+
+Public Sub _new(Factura As CFactura)
+  m_Factura = Factura
+  
+  lblCliente.Text = Subst("(&1) &2", m_Factura.Cliente.Id, m_Factura.Cliente.Nombre)
+  lblFecha.Text = m_Factura.Fecha
+  lblTotal.Text = m_Factura.Total
+  
+  ReportHBox2.DataCount = m_Factura.Detalle.Count
+End
+
+Public Sub lblCantidad_Data(Index As Integer)
+  Last.data = m_Factura.Detalle[Index].Cantidad
+End
+
+Public Sub lblDescripcion_Data(Index As Integer)
+  Last.data = m_Factura.Detalle[Index].Producto.Descripcion
+End
+
+Public Sub lblPrecio_Data(Index As Integer)
+  Last.data = m_Factura.Detalle[Index].Precio
+End
+
+Public Sub lblCodigo_Data(Index As Integer)
+  Last.data = m_Factura.Detalle[Index].Producto.Id
+End
+
+Public Sub lblImporte_Data(Index As Integer)
+  Last.data = m_Factura.Detalle[Index].Importe
+End

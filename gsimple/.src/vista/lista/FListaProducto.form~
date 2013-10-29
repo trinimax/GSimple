@@ -1,0 +1,42 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,95,55)
+  Text = ("Lista de productos")
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  { Panel1 HBox
+    MoveScaled(8,4,77,4)
+    Spacing = True
+    { cmdNuevo Button
+      MoveScaled(0,0,12,4)
+      Text = ("Nuevo")
+    }
+    { cmdModificar Button
+      MoveScaled(12,0,12,4)
+      Text = ("Modificar")
+    }
+    { cmdEliminar Button
+      MoveScaled(24,0,12,4)
+      Text = ("Eliminar")
+    }
+    { Panel2 Panel
+      MoveScaled(37,0,5,4)
+      Expand = True
+    }
+    { Label1 Label
+      MoveScaled(48,0,7,4)
+      Text = ("Buscar:")
+    }
+    { txtFiltro TextBox
+      MoveScaled(55,0,22,4)
+    }
+  }
+  { grd GridView
+    MoveScaled(1,10,47,27)
+    Expand = True
+    Mode = Select.Single
+    Header = GridView.Horizontal
+  }
+}

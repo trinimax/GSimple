@@ -1,0 +1,128 @@
+' Gambas class file
+
+Public Sub Form_Open()
+  InicarGrid
+  CargarLista
+  Me.Center()
+End
+
+Private Sub InicarGrid()
+  With grd
+      .Columns.Count = 4
+  End With
+  
+  'Codigo
+  With grd.Columns[0]
+    .Text = "Código"
+    .Alignment = Align.Right
+    .Width = 80
+  End With
+  
+  'Nombre
+  With grd.Columns[1]
+    .Text = "Descripción"
+    .Alignment = Align.Left
+    .Width = 300
+  End With
+  
+  'Precio
+  With grd.Columns[2]
+    .Text = "Precio"
+    .Alignment = Align.Right
+    .Width = 80
+  End With
+
+  'Stock
+  With grd.Columns[3]
+    .Text = "Stock"
+    .Alignment = Align.Right
+    .Width = 80
+  End With
+End
+
+Private Sub CargarLista()
+  Dim Producto As CProducto
+  Dim Productos As CProducto[]
+  Dim Filtro As String 
+  Dim i As Integer = 0
+
+  If txtFiltro.Length > 0 Then
+    Filtro = "descripcion LIKE " & MData.GetSQLText(txtFiltro.Text & "%")
+  Endif
+  
+  Productos = MProducto.GetAll(Filtro)
+  Productos.Sort(gb.Ascent)
+  
+  grd.Rows.Count = Productos.Count
+  
+  For Each Producto In Productos
+    With Producto
+      grd[i, 0].Text = .Id
+      grd[i, 1].Text = .Descripcion
+      grd[i, 2].Text = MGeneral.FormatCurrency(.Precio)
+      grd[i, 3].Text = MGeneral.FormatNumber(.Stock)
+      
+      If .Stock <= 0 Then
+        grd[i, 3].Background = &HFFBFBF
+      Else
+        grd[i, 3].Background = Color.TextBackground
+      Endif
+    End With
+    i += 1
+  Next
+  
+  If Productos.Count = 0 And txtFiltro.Length > 0 Then
+    txtFiltro.Background = &HFFBFBF
+  Else
+    txtFiltro.Background = Color.TextBackground
+  Endif
+End
+
+Public Sub cmdNuevo_Click()
+  With FProducto
+    .IsNew = True
+    If .ShowModal() Then
+      CargarLista()
+    Endif
+  End With
+End
+
+Public Sub cmdModificar_Click()
+  If grd.Row >= 0 Then
+    With FProducto
+      .Producto = MProducto.GetById(grd[grd.Row, 0].Text)
+      .IsNew = False
+      
+      If .ShowModal() Then
+        CargarLista()
+      Endif
+    End With
+  Endif
+End
+
+Public Sub cmdEliminar_Click()
+  If grd.Row >= 0 Then
+    If MProducto.Delete(grd[grd.Row, 0].Text) Then
+        CargarLista()
+    Endif
+  Endif
+End
+
+Public Sub grd_DblClick()
+  cmdModificar.Value = True
+End
+
+Public Sub grd_KeyPress()
+  Select Case Key.Code
+    Case Key.Enter
+      cmdModificar.Value = True
+    Case Key.Delete
+      cmdEliminar.Value = True
+  End Select
+End
+
+Public Sub txtFiltro_KeyPress()
+  If Key.Code = Key.Enter Then
+    CargarLista()
+  Endif
+End

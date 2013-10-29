@@ -1,0 +1,288 @@
+' Gambas class file
+
+Public Factura As CFactura
+Public IsNew As Boolean
+
+Private m_Item As New CFacturaDetalle
+
+Public Sub Form_Open()
+  InicarGrid()
+  
+  If IsNew Then
+    Factura = New CFactura
+    txtFecha.Value = Date(Now)
+  Else
+    Mostrar()
+  Endif
+End
+
+Private Sub InicarGrid()
+  grd.Columns.Count = 5
+
+  'Código
+  With grd.Columns[0]
+    .Text = "Código"
+    .Alignment = Align.Right
+    .Width = 80
+  End With
+  
+  'Descripción
+  With grd.Columns[1]
+    .Text = "Descripción"
+    .Alignment = Align.Left
+    .Width = 150
+  End With
+  
+  'Cantidad
+  With grd.Columns[2]
+    .Text = "Cantidad"
+    .Alignment = Align.Right
+    .Width = 80
+  End With
+
+  'Precio
+  With grd.Columns[3]
+    .Text = "Precio"
+    .Alignment = Align.Right
+    .Width = 80
+  End With
+
+  'Importe
+  With grd.Columns[4]
+    .Text = "Importe"
+    .Alignment = Align.Right
+    .Width = 80
+  End With
+End
+
+Private Sub Mostrar()
+  If Not IsNull(Factura) Then
+    With Factura
+      txtId.Value = .Id
+      txtFecha.Value = .Fecha
+      .LoadDetalle()
+    End With
+    
+    MostrarDetalle()
+    MostrarCliente()
+  Endif
+End
+
+Private Function Guardar() As Boolean
+  If Validar() Then
+    Factura.Fecha = txtFecha.Value
+    
+    If IsNew Then
+      MFactura.Insert(Factura)
+    Else
+      MFactura.Update(Factura)
+    Endif
+    
+    Return True
+  Endif
+  
+  Return False
+End
+
+Private Function Validar() As Boolean
+  If IsNull(txtFecha.Value) Then
+    Message.Error("Debe ingresar una fecha")
+    txtFecha.SetFocus
+    Return False
+  Endif
+  
+  If IsNull(Factura.Cliente) Then
+    Message.Error("Debe seleccionar un cliente")
+    txtIdCliente.SetFocus
+    Return False
+  Endif
+  
+  If Factura.Detalle.Count = 0 Then
+    Message.Error("Debe ingresar al menos un producto")
+    txtIdProducto.SetFocus
+    Return False
+  Endif
+  
+  Return True
+End
+
+Public Sub btnOK_Click()
+  If Guardar() Then
+    MImpresion.ImprimirFactura(Factura.Id)
+    Me.Close(True)
+  Endif
+End
+
+Public Sub btnCancel_Click()
+  Me.Close(False)
+End
+
+Public Sub txtIdCliente_Click()
+  With New FSeleccionCliente
+    If .Seleccionar() Then
+      txtIdCliente.Text = .Cliente.Id
+    Endif
+  End With
+End
+
+Public Sub txtIdProducto_Click()
+  With New FSeleccionProducto
+    If .Seleccionar() Then
+      txtIdProducto.Text = .Producto.Id
+    Endif
+  End With
+End
+
+Public Sub cmdAgregar_Click()
+  If IsNull(m_Item.Producto) Then
+    Message.Error("Debe ingresar un producto")
+    txtIdProducto.SetFocus
+    Return
+  Endif
+  
+  If txtCantidad.Value <= 0 Then
+    Message.Error("La cantidad debe ser mayor a 0 (cero)")
+    txtCantidad.SetFocus
+    Return
+  Endif
+  
+  m_Item.Cantidad = txtCantidad.Value
+  Factura.Detalle.Add(m_Item)
+  MostrarDetalle
+  
+  m_Item = New CFacturaDetalle
+  MostrarItem()
+  txtIdProducto.SetFocus
+End
+
+Public Sub txtCantidad_KeyPress()
+  If Key.Code = Key.Enter Then
+    cmdAgregar.Value = True
+  Endif
+End
+
+Private Sub MostrarDetalle()
+  Dim Item As CFacturaDetalle
+  Dim i As Long = 0
+  Dim Total As Float = 0
+  
+  grd.Rows.Count = Factura.Detalle.Count
+  
+  For Each Item In Factura.Detalle
+    With Item
+      grd[i, 0].Text = .Producto.Id
+      grd[i, 1].Text = .Producto.Descripcion
+      grd[i, 2].Text = MGeneral.FormatNumber(.Cantidad)
+      grd[i, 3].Text = MGeneral.FormatCurrency(.Precio)
+      grd[i, 4].Text = MGeneral.FormatCurrency(.Importe)
+    End With
+    
+    Total += Item.Importe
+    
+    i += 1
+  Next
+  
+  lblTotal.Text = MGeneral.FormatCurrency(Total)
+  Factura.Total = Total
+End
+
+Private Sub MostrarCliente()
+  If IsNull(Factura.Cliente) Then
+    txtIdCliente.Text = ""
+    lblNombreCliente.Text = ""
+  Else
+    With Factura.Cliente
+      txtIdCliente.Text = .Id
+      lblNombreCliente.Text = .Nombre  
+    End With
+  Endif
+End
+
+Private Sub MostrarItem()
+  If Not IsNull(m_Item) Then
+    If IsNull(m_Item.Producto) Then
+      txtIdProducto.Text = ""
+      lblDescripcionProducto.Text = ""
+    Else
+      txtIdProducto.Text = m_Item.Producto.Id
+      lblDescripcionProducto.Text = m_Item.Producto.Descripcion
+    Endif
+    
+    txtCantidad.Value = m_Item.Cantidad
+  Endif
+End
+
+Public Sub grd_KeyPress()
+  Select Case Key.Code
+    Case Key.Delete
+      EliminarItem()
+  End Select
+End
+
+Private Sub EliminarItem()
+  Dim Row As Integer = grd.Row
+  
+  If Row >= 0 Then
+    Factura.Detalle.Remove(Row)
+    MostrarDetalle()
+  Endif
+End
+
+Public Sub grd_Click()
+  Select Case grd.Column
+    Case 2, 3
+      grd.Edit
+  End Select
+End
+
+Public Sub grd_Save(Row As Integer, Column As Integer, Value As String)
+  Select Case Column
+    Case 2, 3
+      Factura.Detalle[Row].Cantidad = MGeneral.ToNumber(Value)
+      MostrarDetalle
+  End Select
+End
+
+Public Sub txtIdCliente_LostFocus()
+  If txtIdCliente.Length = 0 Then
+    Factura.Cliente = Null  
+  Else
+    Factura.Cliente = MCliente.GetById(MGeneral.ToNumber(txtIdCliente.Text))
+    
+    If IsNull(Factura.Cliente) Then
+      Message.Error("No se encontró el cliente")
+      txtIdCliente.SetFocus
+    Endif
+  Endif
+  
+  MostrarCliente()
+End
+
+Public Sub txtIdProducto_LostFocus()
+  If txtIdProducto.Length = 0 Then
+    m_Item.Producto = Null  
+  Else
+    m_Item.Producto = MProducto.GetById(MGeneral.ToNumber(txtIdProducto.Text))
+    
+    If IsNull(m_Item.Producto) Then
+      Message.Error("No se encontró el producto")
+      txtIdProducto.SetFocus
+    Else
+      m_Item.Precio = m_Item.Producto.Precio
+    Endif
+  Endif
+  
+  MostrarItem()
+End
+
+Public Sub txtIdCliente_KeyPress()
+  If Key.Code = Key.Enter Then
+    txtIdProducto.SetFocus
+  Endif
+End
+
+Public Sub txtIdProducto_KeyPress()
+  If Key.Code = Key.Enter Then
+    txtCantidad.SetFocus
+  Endif
+End

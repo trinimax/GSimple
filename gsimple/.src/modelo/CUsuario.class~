@@ -1,0 +1,34 @@
+' Gambas class file
+
+' 
+Property Id As Integer
+Property Usuario As String
+Property Password As String
+
+Private m_Id As Integer
+Private m_Usuario As String
+Private m_Password As String
+
+Private Function Id_Read() As Integer
+  Return m_Id
+End
+
+Private Sub Id_Write(Value As Integer)
+  m_id = Value
+End
+
+Private Function Usuario_Read() As String
+  Return m_Usuario
+End
+
+Private Sub Usuario_Write(Value As String)
+  m_Usuario = Value
+End
+
+Private Function Password_Read() As String
+  Return m_Password
+End
+
+Private Sub Password_Write(Value As String)
+  m_Password = Value
+End

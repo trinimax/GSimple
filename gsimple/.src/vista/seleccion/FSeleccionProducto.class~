@@ -1,0 +1,96 @@
+' Gambas class file
+
+Property Read Producto As CProducto 
+Private m_Producto As CProducto
+
+Public Function Seleccionar() As Boolean
+  Me.Persistent = True
+  Return Me.ShowModal()
+End
+
+Public Sub Form_Open()
+  InicarGrid
+  CargarLista
+End
+
+Private Sub InicarGrid()
+  With grd
+      .Columns.Count = 2
+  End With
+  
+  'Codigo
+  With grd.Columns[0]
+    .Text = "Código"
+    .Alignment = Align.Right
+    .Width = 80
+  End With
+  
+  'Descripción
+  With grd.Columns[1]
+    .Text = "Descripción"
+    .Alignment = Align.Left
+    .Width = 150
+  End With
+End
+
+Private Sub CargarLista()
+  Dim Producto As CProducto
+  Dim Productos As CProducto[]
+  Dim Filtro As String 
+  Dim i As Integer = 0
+
+  If txtFiltro.Length > 0 Then
+    Filtro = "descripcion LIKE " & MData.GetSQLText(txtFiltro.Text & "%")
+  Endif
+  
+  Productos = MProducto.GetAll(Filtro)
+  
+  grd.Rows.Count = Productos.Count
+  
+  For Each Producto In Productos
+    With Producto
+      grd[i, 0].Text = .Id
+      grd[i, 1].Text = .Descripcion
+    End With
+    i += 1
+  Next
+  
+  If Productos.Count = 0 And txtFiltro.Length > 0 Then
+    txtFiltro.Background = &HFFBFBF
+  Else
+    txtFiltro.Background = Color.TextBackground
+  Endif
+End
+
+Public Sub grd_DblClick()
+  cmdOk.Value = True
+End
+
+Public Sub grd_KeyPress()
+  Select Case Key.Code
+    Case Key.Enter
+      cmdOk.Value = True
+  End Select
+End
+
+Public Sub txtFiltro_KeyPress()
+  If Key.Code = Key.Enter Then
+    CargarLista()
+  Endif
+End
+
+Public Sub cmdOk_Click()
+  If grd.Row >= 0 Then
+    m_Producto = MProducto.GetById(grd[grd.Row, 0].Text)
+    Me.Close(True)
+  Endif
+End
+
+Public Sub cmdCancelar_Click()
+  m_Producto = Null
+  Me.Close(False)
+End
+
+Private Function Producto_Read() As CProducto
+  Return m_Producto
+End

@@ -1,0 +1,106 @@
+' Gambas class file
+
+Public Sub Form_Open()
+  InicarGrid
+  CargarLista
+  Me.Center()
+End
+
+Private Sub InicarGrid()
+  With grd
+      .Columns.Count = 2
+  End With
+  
+  'Codigo
+  With grd.Columns[0]
+    .Text = "Código"
+    .Alignment = Align.Right
+    .Width = 80
+  End With
+  
+  'Nombre
+  With grd.Columns[1]
+    .Text = "Nombre"
+    .Alignment = Align.Left
+    .Width = 150
+  End With
+End
+
+Private Sub CargarLista()
+  Dim Cliente As CCliente
+  Dim Clientes As CCliente[]
+  Dim Filtro As String 
+  Dim i As Integer = 0
+
+  If txtFiltro.Length > 0 Then
+    Filtro = "nombre LIKE " & MData.GetSQLText(txtFiltro.Text & "%")
+  Endif
+  
+  Clientes = MCliente.GetAll(Filtro)
+  Clientes.Sort(gb.Ascent)
+  
+  grd.Rows.Count = Clientes.Count
+  
+  For Each Cliente In Clientes
+    With Cliente
+      grd[i, 0].Text = .Id
+      grd[i, 1].Text = .Nombre
+    End With
+    i += 1
+  Next
+  
+  If Clientes.Count = 0 And txtFiltro.Length > 0 Then
+    txtFiltro.Background = &HFFBFBF
+  Else
+    txtFiltro.Background = Color.TextBackground
+  Endif
+End
+
+Public Sub cmdNuevo_Click()
+  With FCliente
+    .IsNew = True
+    If .ShowModal() Then
+      CargarLista()
+    Endif
+  End With
+End
+
+Public Sub cmdModificar_Click()
+  If grd.Row >= 0 Then
+    With FCliente
+      .Cliente = MCliente.GetById(grd[grd.Row, 0].Text)
+      .IsNew = False
+      
+      If .ShowModal() Then
+        CargarLista()
+      Endif
+    End With
+  Endif
+End
+
+Public Sub cmdEliminar_Click()
+  If grd.Row >= 0 Then
+    If MCliente.Delete(grd[grd.Row, 0].Text) Then
+        CargarLista()
+    Endif
+  Endif
+End
+
+Public Sub grd_DblClick()
+  cmdModificar.Value = True
+End
+
+Public Sub grd_KeyPress()
+  Select Case Key.Code
+    Case Key.Enter
+      cmdModificar.Value = True
+    Case Key.Delete
+      cmdEliminar.Value = True
+  End Select
+End
+
+Public Sub txtFiltro_KeyPress()
+  If Key.Code = Key.Enter Or Key.Code = Key.Return Then
+    CargarLista()
+  Endif
+End

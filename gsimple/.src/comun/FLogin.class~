@@ -1,0 +1,31 @@
+' Gambas class file
+
+Public Sub btnOK_Click()
+  If MData.Connect() Then
+    MGeneral.Usuario = MUsuario.GetLogin(txtUsuario.Text, txtPassword.Text)
+    
+    If MGeneral.Usuario = Null Then
+      Message("Usuario o contraseña no son correctos.")
+      txtUsuario.SetFocus
+    Else
+      Settings["login/usuario"] = txtUsuario.Text
+      Me.Close(True)
+    Endif
+  Endif
+End
+
+Public Sub btnCancel_Click()
+  Me.Close(False)
+End
+
+Public Sub cmdConexion_Click()
+  FConexion.ShowModal()
+End
+
+Public Sub Form_Open()
+  txtUsuario.Text = Settings["login/usuario"]
+End
+
+Public Sub Form_Close()
+  
+End

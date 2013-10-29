@@ -1,0 +1,11 @@
+' Gambas class file
+
+Public Id As Integer
+Public Fecha As Date
+Public Total As Float
+Public Cliente As CCliente
+Public Detalle As New CFacturaDetalle[]
+
+Public Function LoadDetalle()
+  Detalle = MFacturaDetalle.GetByIdFactura(Id)
+End

@@ -1,0 +1,18 @@
+' Gambas module file
+
+Public Function GetLogin(Usuario As String, Password As String) As CUsuario
+  Dim rs As Result
+  Dim OUsuario As CUsuario = Null
+  
+  rs = MData.Exec("SELECT id FROM usuario WHERE usuario = &1 AND password = &2", MData.GetSQLText(Usuario), MData.GetSQLText(Password))
+  
+  If rs.Available Then
+    With OUsuario = New CUsuario
+      .Id = rs["id"]
+      .Usuario = Usuario
+      .Password = Password
+    End With
+  Endif
+  
+  Return OUsuario
+End

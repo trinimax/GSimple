@@ -1,0 +1,17 @@
+' Gambas class file
+
+Public Id As Integer
+Public Descripcion As String
+Public Precio As Float
+Property Read Stock As Float
+
+
+Public Function _compare(Other As CProducto) As Integer
+  Return Sgn(Me.Id - Other.Id)
+End
+
+Private Function Stock_Read() As Float
+  If Id > 0 Then
+    Return MProducto.GetStock(Id)
+  Endif
+End

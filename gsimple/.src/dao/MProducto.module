@@ -1,0 +1,78 @@
+' Gambas module file
+
+Public Function GetAll(Optional Filter As String) As CProducto[]
+  Dim rs As Result
+  Dim OProducto As CProducto
+  Dim OProductos As CProducto[] = New CProducto[]
+  
+  If Len(Filter) Then
+    rs = MData.Exec("SELECT * FROM producto WHERE " & Filter)
+  Else  
+    rs = MData.Exec("SELECT * FROM producto")
+  Endif
+
+  While rs.Available
+      With OProducto = New CProducto
+        .Id = rs["id"]
+        .Descripcion = rs["descripcion"]
+        .Precio = rs["precio"]
+        .Stock = rs["stock"]
+      End With
+      
+      OProductos.Add(OProducto)
+      rs.MoveNext
+  Wend
+
+  Return OProductos
+End
+
+Public Function GetById(Id As Integer) As CProducto
+  Dim rs As Result
+  Dim OProducto As CProducto = Null
+  
+  rs = MData.Exec("SELECT * FROM producto WHERE id = &1", MData.GetSQLNum(Id))
+  
+  If rs.Available Then
+    With OProducto = New CProducto
+      .Id = rs["id"]
+      .Descripcion = rs["descripcion"]
+      .Precio = rs["precio"]
+      .Stock = rs["stock"]
+    End With
+  Endif
+  
+  Return OProducto
+End
+
+Public Function Insert(Producto As CProducto) As Boolean
+  MData.Exec("INSERT INTO producto(id, descripcion, precio) VALUES(&1, &2, &3)", MData.GetSQLNum(Producto.Id), MData.GetSQLText(Producto.Descripcion), MData.GetSQLNum(Producto.Precio))
+  Return True
+Catch
+  Return False
+End
+
+Public Function Update(Producto As CProducto) As Boolean
+  MData.Exec("UPDATE producto SET descripcion = &1, precio = &2 WHERE id = &3", MData.GetSQLText(Producto.Descripcion), MData.GetSQLNum(Producto.Precio), MData.GetSQLNum(Producto.Id))
+  Return True
+Catch
+  Return False
+End
+
+Public Function Delete(Id As Integer) As Boolean
+  MData.Exec("DELETE FROM producto WHERE id = &1", MData.GetSQLNum(Id))
+  Return True
+Catch
+  Return False
+End
+
+Public Function MoverStock(Id As Integer, Cantidad As Float) As Boolean
+  MData.Exec("UPDATE producto SET stock = ROUND(stock + &1, 2) WHERE id = &2", MData.GetSQLNum(Cantidad), MData.GetSQLNum(Id))
+  Return True
+Catch
+  Return False
+End
+
+Public Function GetStock(Id As Integer) As Float
+  Return MData.Exec("SELECT stock FROM producto WHERE id = &1", MData.GetSQLNum(Id))["stock"]
+End
+

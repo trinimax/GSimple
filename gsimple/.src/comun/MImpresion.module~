@@ -1,0 +1,17 @@
+' Gambas module file
+
+Public Sub ImprimirFactura(Id As Integer)
+  Dim fac As CFactura
+  Dim rpt As RFactura
+  
+  If grd.Row >= 0 Then
+    fac = MFactura.GetById(Id)
+    
+    If Not IsNull(fac) Then
+      fac.LoadDetalle
+      rpt = New RFactura(fac)
+      rpt.ex
+      rpt.Preview()
+    Endif
+  Endif
+End

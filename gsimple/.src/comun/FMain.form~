@@ -1,0 +1,31 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,25,22)
+  Text = ("GSimple")
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  { cmdCliente Button
+    MoveScaled(1,1,23,5)
+    Expand = True
+    Text = ("Clientes")
+  }
+  { cmdProducto Button
+    MoveScaled(1,6,23,5)
+    Expand = True
+    Text = ("Productos")
+  }
+  { cmdFactura Button
+    MoveScaled(1,11,23,5)
+    Expand = True
+    Text = ("Facturas")
+  }
+  { lblUsuario Label
+    MoveScaled(1,17,11,3)
+    Expand = True
+    AutoResize = True
+    Text = ("<Usuario>")
+    Alignment = Align.Right
+  }
+}

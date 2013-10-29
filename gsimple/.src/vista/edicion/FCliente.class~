@@ -1,0 +1,58 @@
+' Gambas class file
+
+Public Cliente As CCliente
+Public IsNew As Boolean
+
+Public Sub Form_Open()
+  Mostrar()
+End
+
+Private Sub Mostrar()  
+  If Not IsNull(Cliente) Then
+    With Cliente
+      txtId.Text = .Id
+      txtNombre.Text = .Nombre
+    End With
+  Endif
+End
+
+Private Function Guardar() As Boolean
+  If Validar() Then
+    If IsNew Then
+      Cliente = New CCliente
+    Endif
+    
+    With Cliente
+      .Nombre = txtNombre.Text
+    End With
+    
+    If IsNew Then
+      MCliente.Insert(Cliente)
+    Else
+      MCliente.Update(Cliente)
+    Endif
+    
+    Return True
+  Endif
+End
+
+Private Function Validar() As Boolean
+  If txtNombre.Length = 0 Then
+    Message.Error("Debe ingresar un nombre")
+    txtNombre.SetFocus
+    Return False
+  Endif
+  
+  Return True
+End
+
+
+Public Sub btnOK_Click()
+  If Guardar() Then
+    Me.Close(True)
+  Endif
+End
+
+Public Sub btnCancel_Click()
+  Me.Close(False)
+End

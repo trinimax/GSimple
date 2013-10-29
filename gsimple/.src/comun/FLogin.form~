@@ -1,0 +1,40 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,39,16)
+  Text = ("Iniciar sesión")
+  Resizable = False
+  Spacing = True
+  Margin = True
+  { txtUsuario TextBox
+    MoveScaled(11,1,27,4)
+  }
+  { txtPassword TextBox
+    MoveScaled(11,6,27,4)
+    Password = True
+  }
+  { cmdConexion Button
+    MoveScaled(1,11,4,4)
+    Picture = Picture["icon:/small/exec"]
+  }
+  { btnCancel Button
+    MoveScaled(13,11,12,4)
+    Text = ("Cancel")
+    Cancel = True
+  }
+  { btnOK Button
+    MoveScaled(26,11,12,4)
+    Text = ("Aceptar")
+    Default = True
+  }
+  { Label1 Label
+    MoveScaled(1,1,9,3)
+    AutoResize = True
+    Text = ("Usuario:")
+  }
+  { Label2 Label
+    MoveScaled(1,6,10,3)
+    AutoResize = True
+    Text = ("Contraseña:")
+  }
+}
